@@ -1,0 +1,326 @@
+CREATE DATABASE bdticketmaster
+DROP DATABASE bdticketmaster
+
+`USPListarVentaPorID`
+
+/*CREANDO TABLA PARA ADMINISTRADORES*/
+CREATE TABLE administradores
+(
+idAdmin INT PRIMARY KEY AUTO_INCREMENT,
+admin_nick VARCHAR(20) NOT NULL,
+admin_password VARCHAR(20) NOT NULL
+)
+
+/*nota como usamos parametros para la tabla, esto para no afectar el auto incrementado*/
+INSERT INTO administradores(admin_nick, admin_password) VALUES ('Samu','usilplease41');
+INSERT INTO administradores(admin_nick, admin_password) VALUES ('Joserex','estacanon31');
+INSERT INTO administradores(admin_nick, admin_password) VALUES ('Lian','programando99');
+INSERT INTO administradores(admin_nick, admin_password) VALUES ('JoseG','usilvamos123');
+
+
+CREATE PROCEDURE USPListarAdministradores()
+	SELECT * FROM administradores
+
+CREATE PROCEDURE USPEliminarAdministradores(IN idAdminParam INT(11))
+	DELETE FROM administradores WHERE idAdmin = idAdminParam
+	
+CREATE PROCEDURE USPInsertarAdministradores
+(
+	IN admin_nick VARCHAR(20),
+	IN admin_password VARCHAR(20)
+)
+INSERT INTO administradores (admin_nick, admin_password) VALUES (admin_nick, admin_password);
+
+
+DELIMITER //
+CREATE PROCEDURE USPModificarAdministradores
+(
+    IN p_idAdmin INT(11),
+    IN p_admin_nick VARCHAR(20),
+    IN p_admin_password VARCHAR(20)
+)
+BEGIN
+    UPDATE administradores
+    SET admin_nick = p_admin_nick,
+        admin_password = p_admin_password
+    WHERE idAdmin = p_idAdmin;
+END //
+DELIMITER ;
+
+
+
+
+
+
+/*CREANDO TABLA PARA TIPOS*/
+CREATE TABLE tipos
+(
+idTipos INT PRIMARY KEY AUTO_INCREMENT,
+tipo VARCHAR(30) NOT NULL
+)
+INSERT INTO tipos (tipo) VALUES ('Rock');
+INSERT INTO tipos (tipo) VALUES ('Metal');
+INSERT INTO tipos (tipo) VALUES ('Pop');
+INSERT INTO tipos (tipo) VALUES ('Balada');
+INSERT INTO tipos (tipo) VALUES ('Salsa');
+INSERT INTO tipos (tipo) VALUES ('Cumbia');
+INSERT INTO tipos (tipo) VALUES ('Terror');
+INSERT INTO tipos (tipo) VALUES ('Drama');
+INSERT INTO tipos (tipo) VALUES ('Comedia');
+INSERT INTO tipos (tipo) VALUES ('Acción');
+INSERT INTO tipos (tipo) VALUES ('Musical');
+
+CREATE PROCEDURE USPListarTipos()
+SELECT*FROM tipos
+
+CREATE PROCEDURE USPInsertarTipos
+(
+	IN tipoParam VARCHAR(30)	
+)
+INSERT INTO tipos(tipo) VALUES (tipoParam);
+
+
+CREATE PROCEDURE USPEliminarTipos(IN idTiposParam INT(11))
+	DELETE FROM tipos WHERE idTipos = idTiposParam
+
+
+DELIMITER //
+CREATE PROCEDURE USPModificarTipos
+(
+    IN idTiposParam INT(11),
+    IN tipoParam VARCHAR(30)
+)
+BEGIN
+    UPDATE tipos
+    SET tipo = tipoParam
+    WHERE idTipos = idTiposParam;
+END //
+DELIMITER ;
+
+
+/*CREANDO TABLA PARA CONCEPTOS*/
+CREATE TABLE conceptos
+(
+idConcepto INT PRIMARY KEY AUTO_INCREMENT,
+concepto_nombre VARCHAR(20) NOT NULL
+)
+
+INSERT INTO conceptos(concepto_nombre) VALUES ('Concierto');
+INSERT INTO conceptos(concepto_nombre) VALUES ('Festival');
+INSERT INTO conceptos(concepto_nombre) VALUES ('Cine');
+INSERT INTO conceptos(concepto_nombre) VALUES ('Teatro');
+
+CREATE PROCEDURE USPListarConceptos()
+	SELECT * FROM conceptos
+	
+	
+CREATE PROCEDURE USPInsertarConceptos
+(
+	IN concepto_nombreParam VARCHAR(20)	
+)
+INSERT INTO conceptos(concepto_nombre) VALUES (concepto_nombreParam);
+
+CREATE PROCEDURE USPEliminarConceptos(IN idConceptoParam INT(11))
+	DELETE FROM conceptos WHERE idConceptos = idConceptoParam
+
+
+
+DELIMITER //
+CREATE PROCEDURE USPModificarConceptos
+(
+    IN idConceptosParam INT(11),
+    IN concepto_nombreParam VARCHAR(20)
+)
+BEGIN
+    UPDATE conceptos
+    SET concepto_nombre = concepto_nombreParam
+    WHERE idConcepto = idConceptoParam;
+END //
+DELIMITER ;
+
+/*-------------------CREANDO TABLA PARA VENDEDORES--------------*/
+CREATE TABLE vendedores
+(
+idVendedores INT PRIMARY KEY AUTO_INCREMENT,
+nombreVendedores VARCHAR(30)
+)
+
+INSERT INTO vendedores(nombreVendedores) VALUES ('JGUZMAN');
+INSERT INTO vendedores(nombreVendedores) VALUES ('MGARCIA');
+INSERT INTO vendedores(nombreVendedores) VALUES ('LREYES');
+INSERT INTO vendedores(nombreVendedores) VALUES ('PMARADONA');
+
+
+CREATE PROCEDURE USPListarVendedores()
+	SELECT * FROM vendedores
+	
+	
+CREATE PROCEDURE USPInsertarVendedores
+(
+	IN nombreVendedoresParam VARCHAR(30)	
+)
+INSERT INTO vendedores(nombreVendedores) VALUES (nombreVendedoresParam);
+
+
+CREATE PROCEDURE USPEliminarVendedores(IN idVendedoresParam INT(11))
+	DELETE FROM vendedores WHERE idVendedores = idVendedoresParam
+
+
+
+DELIMITER //
+CREATE PROCEDURE USPModificarVendedores
+(
+    IN idVendedoresParam INT(11),
+    IN nombreVendedoresParam VARCHAR(30)
+)
+BEGIN
+    UPDATE vendedores
+    SET nombreVendedores = nombreVendedoresParam
+    WHERE idVendedores = idVendedoresParam;
+END //
+DELIMITER ;
+
+
+/*--------------------------------------------------Para venta--------------------*/
+DROP TABLE venta
+CREATE TABLE venta (
+    idVenta INT PRIMARY KEY AUTO_INCREMENT,
+    idVendedores INT,
+    nombreVendedor VARCHAR(30),
+    totalAPagar DECIMAL(10, 2),
+    fechaDeVenta DATE,
+    FOREIGN KEY (idVendedores) REFERENCES vendedores(idVendedores)
+);
+
+INSERT INTO venta(idVendedores, nombreVendedor,totalAPagar,fechaDeVenta) VALUES (1,'JGUZMAN',320.00, '2023-11-15');
+INSERT INTO venta(idVendedores, nombreVendedor,totalAPagar,fechaDeVenta) VALUES (2,'MGARCIA',215.00,'2023-12-15');
+
+CREATE PROCEDURE USPListarVentas()
+	SELECT * FROM venta
+	
+	
+CREATE PROCEDURE USPInsertarVentas
+(
+    IN idVendedoresParam INT,
+    IN nombreVendedorParam VARCHAR(30),
+    IN totalAPagarParam DECIMAL(10, 2),
+    IN fechaDeVentaParam DATE
+)
+    INSERT INTO venta (idVendedores, nombreVendedor, totalAPagar, fechaDeVenta)
+    VALUES (idVendedoresParam, nombreVendedorParam, totalAPagarParam, fechaDeVentaParam);
+    
+
+
+DELIMITER //
+CREATE PROCEDURE USPModificarVentas
+(
+    IN idVentaParam INT(11),
+    IN idVendedoresParam INT(11),
+    IN nombreVendedorParam VARCHAR(30),
+    IN totalAPagarParam DECIMAL(10, 2),
+    IN fechaDeVentaParam DATE
+)
+BEGIN
+    UPDATE venta
+    SET idVendedores = idVendedoresParam,
+    nombreVendedor = nombreVendedorParam,
+    totalAPagar = totalAPagarParam,
+    fechaDeVenta = fechaDeVentaParam
+    WHERE idVenta = idVentaParam;
+END //
+DELIMITER ;
+
+/*----------------------------------------PARA FUNCIONES-----------------*/
+DROP TABLE funciones
+CREATE TABLE funciones(
+idFuncion INT PRIMARY KEY AUTO_INCREMENT,
+idConcepto INT,
+conceptoNombre VARCHAR(20),
+nombreFuncion VARCHAR(50),
+idTipos INT,
+tipoNombre VARCHAR(30),
+lugarFuncion VARCHAR(50),
+fechaFuncion DATE,
+disponibleFuncion VARCHAR(20),
+precio DECIMAL(10,2),
+FOREIGN KEY (idConcepto) REFERENCES conceptos(idConcepto),
+FOREIGN KEY (idTipos) REFERENCES tipos(idTipos)
+);
+
+INSERT INTO funciones(idConcepto, conceptoNombre, nombreFuncion, idTipos, tipoNombre, lugarFuncion, fechaFuncion, disponibleFuncion, precio) 
+VALUES (1,'Concierto','The Beatles',1,'Rock','Estadio Nacional de Lima', '2023-11-15', 'No disponible', 75.00);
+INSERT INTO funciones(idConcepto, conceptoNombre, nombreFuncion, idTipos, tipoNombre, lugarFuncion, fechaFuncion, disponibleFuncion, precio) 
+VALUES (1,'Concierto','AC/DC',1,'Rock','Estadio Nacional de Lima', '2024-06-19', 'Disponible', 85.00);
+INSERT INTO funciones(idConcepto, conceptoNombre, nombreFuncion, idTipos, tipoNombre, lugarFuncion, fechaFuncion, disponibleFuncion, precio) 
+VALUES (1,'Concierto','Pintura Roja',6,'Cumbia','Centro de Convenciones Maria Angola', '2024-03-21', 'Disponible', 65.00);
+INSERT INTO funciones(idConcepto, conceptoNombre, nombreFuncion, idTipos, tipoNombre, lugarFuncion, fechaFuncion, disponibleFuncion, precio) 
+VALUES (3,'Cine','Avatar 3',10,'Acción','Cineplanet', '2024-09-29', 'Disponible', 20.00);
+
+CREATE PROCEDURE USPListarFunciones()
+	SELECT * FROM funciones
+
+
+
+/*------------------------------------PARA DETALLE DE VENTA--------------------------------*/
+DROP TABLE detalle_venta
+CREATE TABLE detalle_venta (
+    idVenta INT NOT NULL,    
+    idFuncion VARCHAR(50),
+    nombreFuncion VARCHAR(200),
+    idConcepto VARCHAR(50),
+    conceptoNombre VARCHAR(200),
+    precio VARCHAR(100),    
+    idVendedores INT NOT NULL,
+    nombreVendedores VARCHAR(30),
+    cantidad VARCHAR(30),
+    totalAPagar DECIMAL(10, 2),
+    nombreCliente VARCHAR(50),
+    dniCliente VARCHAR(10),    
+    fechaDeVenta DATE,
+    PRIMARY KEY (idVenta, idVendedores)
+);
+
+De modo que se muestre asi
+1,The Beatles, 1, Concierto, 1, 75.00, 1, JGUZMAN, 2, 150.00, 2023-11-15
+//idVenta,idFuncion,nombreFuncion,idConcepto,conceptoNombre,precio,idVendedores,nombreVendedores,cantidad,totalAPagar,nombreCliente,dniCliente,fechaDeVenta
+
+
+
+INSERT INTO detalle_venta(idVenta,idFuncion,nombreFuncion,idConcepto,conceptoNombre,precio,idVendedores,nombreVendedores,cantidad,totalAPagar,nombreCliente,dniCliente,fechaDeVenta) 
+VALUES (1,'1,2','The Beatles,AC/DC','1,1','Concierto,Concierto','75.00,85.00', 1, 'JGUZMAN', '2,2', 320.00 ,'Mariano Aguilar','98435857','2023-11-15');
+
+INSERT INTO detalle_venta(idVenta,idFuncion,nombreFuncion,idConcepto,conceptoNombre,precio,idVendedores,nombreVendedores,cantidad,totalAPagar,nombreCliente,dniCliente,fechaDeVenta) 
+VALUES (2,'2,3','AC/DC,Pintura Roja','1,1','Concierto,Concierto','85.00,65.00', 2, 'MGARCIA', '1,2', 215.00, 'Luchito Perez','19273287','2023-11-15');
+
+
+CREATE PROCEDURE USPListarDetalleVentas()
+	SELECT*FROM detalle_venta
+
+
+
+//idVenta,idFuncion,nombreFuncion,idConcepto,conceptoNombre,precio,idVendedores,nombreVendedores,cantidad,totalAPagar,nombreCliente,dniCliente,fechaDeVenta
+CREATE PROCEDURE USPInsertarDetalleVentas
+(
+    IN idVentaParam INT,    
+    IN idFuncionParam INT,
+    IN nombreFuncionParam VARCHAR(50),    
+    IN idConceptoParam INT,
+    IN conceptoNombreParam VARCHAR(20),
+    IN precioParam DECIMAL(10, 2),
+    IN idVendedoresParam INT,
+    IN nombreVendedoresParam VARCHAR(30),
+    IN cantidadParam INT,
+    IN totalAPagarParam DECIMAL(10, 2),
+    IN nombreClienteParam VARCHAR(50),
+    IN dniClienteParam VARCHAR(10),
+    IN fechaDeVentaParam DATE
+)
+    INSERT INTO detalle_venta (idVenta,idFuncion,nombreFuncion,idConcepto,conceptoNombre,precio,idVendedores,nombreVendedores,cantidad,totalAPagar,nombreCliente,dniCliente,fechaDeVenta)
+    VALUES (idVentaParam,idFuncionParam,nombreFuncionParam,idConceptoParam,conceptoNombreParam,precioParam,idVendedoresParam,nombreVendedoresParam,cantidadParam,totalAPagarParam,nombreClienteParam,dniClienteParam,fechaDeVentaParam);
+    
+/*estoy creando esto para poder hacer lo del reto FrmOperacion --> mostrar tableselected y obtener su id para pintarlo segun su id en otra tabla */
+CREATE PROCEDURE USPListarDetalleVentasPorID(IN codigoP INT(11))
+	SELECT * FROM detalle_venta WHERE idVenta = codigoP
+	
+
+/*------------------------------------------------------------ESTOY PROBANDO-------------------------------*/
